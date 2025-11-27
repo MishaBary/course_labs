@@ -1,48 +1,76 @@
 <div align="center">
-<h1><a id="intro"> Лабораторные работы <sup><kbd>intro</kbd></sup></a><br></h1>
+<h1><a id="intro"> Лабораторные работы <sup><kbd>Course</kbd></sup></a><br></h1>
 <a href="https://docs.github.com/en"><img src="https://img.shields.io/static/v1?logo=github&logoColor=fff&label=&message=Docs&color=36393f&style=flat" alt="GitHub Docs"></a>
 <a href="https://daringfireball.net/projects/markdown"><img src="https://img.shields.io/static/v1?logo=markdown&logoColor=fff&label=&message=Markdown&color=36393f&style=flat" alt="Markdown"></a> 
 <a href="https://symbl.cc/en/unicode-table"><img src="https://img.shields.io/static/v1?logo=unicode&logoColor=fff&label=&message=Unicode&color=36393f&style=flat" alt="Unicode"></a> 
 <a href="https://shields.io"><img src="https://img.shields.io/static/v1?logo=shieldsdotio&logoColor=fff&label=&message=Shields&color=36393f&style=flat" alt="Shields"></a>
 <a href="https://img.shields.io/badge/Risk_Analyze-2448a2"><img src="https://img.shields.io/badge/Course-Risk_Analysis-2448a2" alt= "RA"></a> <img src="https://img.shields.io/badge/AppSec-2448a2" alt= "RA"></a> <img src="https://img.shields.io/badge/Contributor-Шмаков_И._С.-8b9aff" alt="Contributor Badge"></a></div>
 
-***
+<div align="center">
+<img src="https://img.shields.io/github/repo-size/geminishkv/course_labs" alt="repo size"></a>
+<img src="https://img.shields.io/github/last-commit/geminishkv/course_labs" alt="repo size"></a>
+<img src="https://img.shields.io/github/commit-activity/m/geminishkv/course_labs" alt="repo size"></a>
+<img src="https://img.shields.io/github/issues-pr/geminishkv/course_labs"></a>
+<img src="https://img.shields.io/github/contributors/geminishkv/course_labs"></a></div>
 
 <br>Салют :wave:,</br>
-Отмечу основные моменты, которые вам необходимы для успешной и качественной подготовки:
+Отмечу основные моменты:
 
-- Сформировать навыки работы с **git, CI, CD, Docker, packages, appsec toolchain, etc**. Каждый мини проект должен будет собран по формату из представленных лабораторных работ и размещен на сервисе GitHub, с формирование соответствующего отчета в виде gistup для демонстрации выполненной работы и скриншотами результатов (**где это требуется**). 
+*  Цель - сформировать навыки работы с `git`, `CI`, `CD`, `docker`, `packages`, `appsec toolchain`, `yml`, etc. 
+*  *Часть работ базируется на на `Go`, `Python`, `JAVA`, `js` и и.д.
+*  Рассматриваются инструменты `SAST`, `SCA`, `Container Security`, `DAST`, `Secret Detection`, etc. 
+*  Работы направлены на углубление и изучение материалов анализа рисков и оценки защищенности приложений, которые необходимы для итерационной разработки, также дают дополнительно возможности для изучения паттернов программирования, прототипирования
+*  Каждый мини проект должен будет собран по формату из представленных лабораторных работ и размещен на сервисе `GitHub`, с формирование соответствующего отчета в виде `gistup` для демонстрации выполненной работы и скриншотами результатов (**где это требуется**). 
+*  Для каждой лабораторной работы следует создавать собственный репозиторий (возможно использование `fork` с родительского), в котором необходимо разместить исходный код проекта, далее составить отчет к нему в формате `gistup`. 
+*  Все лабораторные работы должны быть выполнены в ветке develop и необходимо cделать [approve](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/requesting-a-pull-request-review) по `pull request` на [geminishkv](https://github.com/geminishkv), тем самым будет финально подтверждаться согласование изменений и правок, которые были внесены удаленно 
 
-- Часть работ базируется на **C/C++** с использованием **CMakeList**, аналогично также работы на **Go**, **Python**, **JAVA** и соответствующих инструментов **SAST, SCA, Container Security, DAST, Secret Detection, etc.**. В лабораторных рассматривается также использование инструментов требующих установки дополнительных пакетов open-source. 
+![Logo](assets/logotype/logo2.jpg)
 
-- Работы направлены на углубление и изучение материалов, которые необходимы для итерационной разработки, изучения паттернов программирования, прототипирования. 
+**Замечание:** 
+* Лабораторные работы - обязательны к прохождению, сдаче и итерационной разработке, при любом уровне подготовки
+* Необходимо скопировать этапы реализации и отмечать у себя именно те, которые были сделаны
+* Каждая работа изначально должна итерационно разбиваться на коммиты изменений для их отслеживания
+* Каждый отчет сдается индивидуально с защитой, каждая используемая команда должна иметь описание (пояснение) в отчете `gistup` и содержать вывод из терминала с пояснением команды в консоли
+* В лабораторных рассматривается также использование инструментов требующих установки дополнительных пакетов open-source
+* Для всех отчетов следует избегать скриншотов и делать со вставками вывода из консоли и описания используемых команд, флагов и что они означают для понимания принципа их работы
 
-- Для каждой лабораторной работы следует создавать собственный репозиторий (возможно использование **fork**), в котором необходимо разместить исходный код проекта, далее составить отчет к нему в формате **gistup**. Каждый отчет сдается индивидуально с защитой, каждая используемая команда должна иметь описание (пояснение) в отчете **gistup** и содержать вывод из терминала/консоли.
+<div align="center"><h2>Stay tuned ;)</h3></div> 
 
-- Каждая работа изначально должна итерационно разбиваться на коммиты изменений для их отслеживания 
-
-- Все лабораторные работы должны быть выполнены в ветке develop и необходимо делать <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/requesting-a-pull-request-review"> approve </a> для `pull request` на [geminishkv](https://github.com/geminishkv), тем самым будет финально подтверждаться согласование изменений и правок, которые были внесены удаленно 
-
-<div align="center"><h3>Stay tuned ;)</h3></div> 
-
-**Замечание:** лабораторные работы - обязательны к прохождению, сдаче и итерационной разработке, при любом уровне подготовки. Также, необходимо скопировать этапы реализации и отмечать у себя именно те, которые были сданы (приняты).
-
-*** 
-
-### Этапы реализации
+### Этапы
     
-1.  Порядок выполнения работ:
+1. Ознакомление с учебными материалами по [лекциям](artifacts/ppt/)
+2. Ознакомиться с [примерами](artifacts/exmpls/)
+3. Каждый репозиторий должен содержать `.gitignore`, `code of condact`, `contributing`, `license`, `notice`, `security` и должен быть адаптирован под конкретную лабораторную работу, проект.
+    * **Обратите внимание**, что тип лицензий должен быть подобран правильно при переиспользовании материалов проекта и следует ознакомиться с ними дополнительно.
+4. Выполнить следующие работы порядково:
 
--  [ ] lab01 - <a href="https://github.com/geminishkv/course_labs/blob/develop/labs/lab01/README.md">Лабораторная работа посвящена изучению **gitscm** и подготовительными материалами для последующих работ</a>
-    -  Материалы для работы <a href="https://github.com/geminishkv/course_labs/blob/develop/labs/lab01">тут</a>
--  [ ] lab02 - <a href="https://github.com/geminishkv/course_labs/blob/develop/labs/lab02/README.md">Лабораторная работа посвящена изучению работы *nix, контролей прав доступа, оперированию процессов</a>
-    -  Материалы для работы <a href="https://github.com/geminishkv/course_labs/blob/develop/labs/lab02">тут</a>
--  [ ] lab03 - <a href="https://github.com/geminishkv/course_labs/blob/develop/labs/lab03/README.md">Лабораторная работа посвящена изучению **nmap** и анализа выявленных уязвимостей</a>
-    -  Материалы для работы <a href="https://github.com/geminishkv/course_labs/blob/develop/labs/lab03">тут</a>
--  [ ] lab04 - <a href="https://github.com/geminishkv/course_labs/blob/develop/labs/lab04/README.md">Данная лабораторная работа посвящена практическому **анализу и определению мер** снижения рисков ИБ</a>
--  [ ] lab05 - <a href="https://github.com/geminishkv/course_labs/blob/develop/labs/lab05/README.md">Данная лабораторная работа посвящена изучению **Docker** и как с ним работать</a>
-    -  Материалы для работы <a href="https://github.com/geminishkv/course_labs/blob/develop/labs/lab05">тут</a>
+-  [ ] lab01 - [Лабораторная работа посвящена изучению **gitscm** и подготовительными материалами для последующих работ](labs/lab01/README.md)
+    -  Материалы для работы [тут](labs/lab01/)
+-  [ ] lab02 - [Лабораторная работа посвящена изучению работы *nix, контролей прав доступа, оперированию процессов](labs/lab02/README.md)
+    -  Материалы для работы [тут](labs/lab02/)
+    -  Пример отчета [тут](https://gist.github.com/MishaBary/21ab63f83292a86268e039d484a86411). [Исходник]()
+-  [ ] lab03 - [Лабораторная работа посвящена изучению **nmap** и анализа выявленных уязвимостей](labs/lab03/README.md)
+    -  Материалы для работы [тут](labs/lab03/)
+-  [ ] lab04 - [Данная лабораторная работа посвящена практическому **анализу и определению мер** снижения рисков ИБ](labs/lab04/README.md)
+-  [ ] lab05 - [Данная лабораторная работа посвящена изучению **Docker** и как с ним работать](labs/lab05/README.md)
+    -  Материалы для работы [тут](labs/lab05/)
 -  [ ] **Обновление будет предоставлено позднее**
+
+5. Реализовать итоговую работу и составить отчет
+
+-  [ ] **Обновление будет предоставлено позднее** 
+
+***
+
+### Сопроводительные материалы:
+
+* [Cheatsheet GitScm](artifacts/cheatsheet/CHEATSHEET_GIT.md)
+* [Cheatsheet .gitignore](artifacts/cheatsheet/CHEATSHEET_GITIGNORE.md)
+* [Cheatsheet GitHub CLI](artifacts/cheatsheet/CHEATSHEET_GH_CLI.md)
+* [Cheatsheet Docker](artifacts/cheatsheet/CHEATSHEET_DOCKER.md)
+* [Cheatsheet .dockerignore](artifacts/cheatsheet/CHEATSHEET_DOCKERIGNORE.md)
+* [License Notice](./NOTICE.md)
+* [Приложение](./APPENDIX.md)
 
 ***
 
@@ -60,20 +88,27 @@
 - ✔️ Обеспечить размещение пакета проекта на сервисе GitHub Release при успешном слияние ветки develop и master
 - ✔️ Проконтролировать корректную эксплуатацию проекта
 - ✔️ Рефакторинг и поддержка лабораторных работ в процессной деятельности
-- ✔️ Все команды выполняться строго их терминала/ консоли без использования WebUI за исключениям работы с токенами, ключами и специфичными настройками.
+- ✔️ Все команды выполняться строго из терминала/ консоли без использования WebUI за исключениям работы с токенами, ключами и специфичными настройками.
 
 ***
 
 ### Структура репозитория
 
 ```
+├── APPENDIX.md
 ├── artifacts
-│   ├── cheetsheet
+│   ├── art_cheatsheet
 │   │   ├── Docker_Image_Security_Best_Practices.pdf
 │   │   └── gitscm.jpg
+│   ├── cheatsheet
+│   │   ├── CHEATSHEET_DOCKER.md
+│   │   ├── CHEATSHEET_DOCKERIGNORE.md
+│   │   ├── CHEATSHEET_GH_CLI.md
+│   │   ├── CHEATSHEET_GIT.md
+│   │   └── CHEATSHEET_GITIGNORE.md
 │   ├── exmpls
-│   │   ├── Аналитический отчет по уязвимости PrintNightmare.pdf
-│   │   ├── Пример - Multisignature - Безопасности криптовалютных платежей.pdf
+│   │   ├── Аналитический отчет по уязвимости PrintNightmare.pdf
+│   │   ├── Пример - Multisignature - Безопасности криптовалютных платежей.pdf
 │   │   └── Пример_аналитических_отчетов_по_задачам_ИБ.pdf
 │   ├── owasp
 │   │   ├── OWASP_Top_10_CICD_Risks.pdf
@@ -87,7 +122,8 @@
 │       └── Лекция_Управление Рисками ИБ_intro.pdf
 ├── assets
 │   ├── logotype
-│   │   └── logo.jpg
+│   │   ├── logo.jpg
+│   │   └── logo2.jpg
 │   └── style
 │       └── style.css
 ├── CODE_OF_CONDUCT.md
@@ -127,94 +163,16 @@
 ├── NOTICE.md
 ├── README.md
 └── SECURITY.md
-
 ```
 
 ***
 
-### Сопроводительные материалы
+### Ресурсы:
 
-- gitscm
+* 📘  **Аннотационный материал:**
 
-```bash
-$ git init # Инициализация пустого локального репозитория
-$ git remote add origin URL_link # Связывание удалённого репозитория с именем "origin" по ссылке "URL_link" с локальным
-$ git pull origin name_branch # Ветка из которой мы берем изменения для тестирования
-$ git remote show # Показать подключенные удалённые репозитории
-$ git status 	# Показывает состояние локального репозитория (отслеживаемые, изменённые, новые файлы и пр.)
-$ git add . # Добавить в индекс все новые, изменённые, удалённые файлы из текущей директории и её поддиректорий
-$ git commit -S -m"added sources" # Зафиксировать в коммите проиндексированные изменения (закоммитить), добавить сообщение
-$ git push origin name_branch # Отправляем изменения из локального репозитория в удалённый в ветку "name_branch"
-$ git show HEAD # Информация о последнем комите (git log -1)
-$ git clean -fdn # Удаляет неотслеживаемые файлы и каталоги с предварительным просмотром
-$ git push --set-upstream origin new-name # Установка upstream (связывает локальную ветку с удаленной)
-$ git remote show # Вывод связанных веток
-$ git push origin :old-name # Удаление старой ветки в удаленном репо
-$ git push origin new-name # Публикация новой ветки
-```
-
-- gitscm index
-
-```bash
-$ git add text.txt # Добавить в индекс указанный файл (был изменён, был удалён или это новый файл)
-$ git add -i # Запустить интерактивную оболочку для добавления в индекс только выбранных файлов
-$ git add -p # Показать новые/изменённые файлы по очереди с указанием их изменений и вопросом об отслеживании/индексировании
-$ git reset # Убрать из индекса все добавленные в него изменения (в рабочей директории все изменения сохранятся), антипод git add
-$ git reset readme.txt # Убрать из индекса изменения указанного файла (в рабочей директории изменения сохранятся)
-$ git checkout text.txt # ОПАСНО: отменить изменения в файле, вернуть состояние файла, имеющееся в индексе
-$ git reset --hard # ОПАСНО: отменить изменения; вернуть то, что в коммите, на который указывает HEAD (незакомиченные изменения удалены из индекса и из рабочей директории, неотслеживаемые файлы останутся на месте)
-$ git clean -df # Удалить неотслеживаемые файлы и директории
-```
-
-- gitscm конфликты
-
-```bash
-
-$ git remote set-url origin ssh://git@github.com_gitlab.com/username/newRepoName.git # Замена URL
-$ git pull --rebase origin name_branch # Переинициализация
-$ git remote -v # Проверка правильности указанного link
-$ git reset HEAD~ # Отмена последнего commit $ git reset --hard HEAD~ # Удаление commit с изменениями
-$ git push origin --delete name_branch / git branch -rD origin/name_branch
-$ git branch -d name_branch # Удаление локального репо
-$ git reset HEAD file # Убирает файл из индекса
-$ git checkout -- file # Отменяет изменение
-$ git clean -fdn # Удаляет неотслеживаемые файлы и каталоги с предварительным просмотром
-
-# Установка новой master/main ветки
-$ git branch -m master gpages
-$ git fetch origin
-$ git branch -u origin/gpages gpages
-$ git remote set-head origin -a
-
-$ tree -I "katalog|katalog" # Вывод с исключением каталогов для дерева проекта
-
-$ git fetch origin # Жесткая перезапись репозитория
-$ git reset --hard origin/<branch_name>
-
-```
-
-- gh actions
-
-```bash
-$ gh auth login
-$ gh repo create repo_name # Cоздание удаленного репозитория (без URL)
-$ gh pr create # pull request
-	 —assignee «nickname» 
-	 --base main 
-	 --head feature-branch # Индивидуальный pull request (можно -a)
-$ gh pr create --title "Bug" --body "work" $ gh pr create --base base_name # head changed_branch $ gh repo create repo_name --source=. --public
-$ gh repo clone user/repo
-$ gh issue list # Список открытых issue
-$ gh pr create --title "Название" --body "Описание" --base main --head feature-branch
-	 --title # Заголовок PR
-	 --body # Описание
-	 --base # Целевая ветка
-	 --head # Ваша ветка
-$ gh pr merge --squash
-$ gh repo view --web # Открыть репозитория в web
-```
-
-- gistup
+    * [OWASP TOP 10](artifacts/owasp/)
+    * `gistup`
 
 ```bash
 $ npm install -g gistup
@@ -222,233 +180,9 @@ $ gh <command> <subcommand> --help
 $ gh gist create -d "my test gist" -f some_local_file.txt  test_gist
 ```
 
-- .gitignore
-
-```
-*build*/
-*install*/
-*.swp
-.idea/
-```
-
-- Docker
-
-```bash
-$ docker image ls all # все образы
-$ docker container ls # все запущенные контейнеры
-$ docker container ls -all # все контейнеры
-$ docker run -d --privileged --name docker go:1.16 # привилегированный режим
-
-# Building & Rebuilding
-$ docker compose build	 
-$ docker compose build --no-cache # Создает образы без использования кэша
-$ docker compose build <service> # Создает только определенную службу
-$ docker compose up --build	# Создает изображения, а затем запускает контейнеры
-$ docker compose up --force-recreate # Воссоздает контейнеры, даже если ничего не изменилось
-$ docker compose up --build --force-recreate # Полностью перестраивает и воссоздает контейнеры
-
-# Running Containers
-$ docker compose up	
-$ docker compose up -d	 # Запускает контейнеры в отсоединенном режиме в фоновом режиме
-$ docker compose start	 # Запускает уже созданные контейнеры (не перестраивает и не создает заново)
-
-# Stopping & Removing Containers
-$ docker compose stop	
-$ docker compose down	# Останавливает и удаляет контейнеры, сети и тома по умолчанию
-$ docker compose down --volumes	 # Удаляет контейнеры, сети и именованные/анонимные тома
-$ docker compose down --rmi all	 # Также удаляет все построенные изображения
-$ docker compose rm	 # Удаляет остановленные контейнеры служб (после остановки)
-$ docker compose kill # Принудительно останавливает запуск контейнеров
-
-# Useful Inspection & Debugging
-$ docker compose ps	# Списки запущенных служб и их состояние
-$ docker compose logs # Отображение журналов для всех служб
-$ docker compose logs -f	
-$ docker compose exec <service> sh # Открывает оболочку внутри работающего контейнера
-$ docker compose config
-
-docker exec -it <container_name_or_id> <command> # выполнение команды
-            -i  # интерактивный режим (позволяет передать ввод)
-            -t  # выделяет псевдотерминал (tty) для взаимодействия.
-            <container_name_or_id>  # имя или ID контейнера.
-```
-
-- .dockerignore
-
-```
-.git/
-monitoring/
-node_modules/
-screenshots/
-test/
-build/reports/
-dist/
-vagrant/
-logs/
-Dockerfile
-.npmrc
-/bom.json
-/bom.xml
-frontend/node_modules/
-frontend/dist/
-```
-
-***
-
-### Приложение:
-
-<details><summary><strong>Указатели</strong></summary><p>
-
-- `HEAD` — указатель на текущий коммит или на текущую ветку (то есть, в любом случае, на коммит). Указывает на родителя коммита, который будет создан следующим.
-- `ORIG_HEAD` — указатель на коммит, с которого вы только что переместили `HEAD` (командой `git reset` ..., например).
-- Ветка (`master`, `develop` etc.) — указатель на коммит. При добавлении коммита, указатель ветки перемещается с родительского коммита на новый.
-- Теги — простые указатели на коммиты. Не перемещаются.
-
- </p></details>
- 
-<details><summary><strong>ENV</strong></summary><p>
-
-Команда git config позволяет управлять конфигурацией (примеры для --global)
-
-- Локальный (--local) - только для текущего репозитория, файл .git/config
-- Глобальный (--global) - для пользователя, файл ~/.gitconfig
-- Системный (--system) - для всех пользователей /etc/gitconfig
-
- </p></details>
-
-<details><summary><strong>Unix commands</strong></summary><p>
-
-- [ar](https://en.wikipedia.org/wiki/Ar_(Unix))
-- [cat](https://en.wikipedia.org/wiki/Cat_(Unix))
-- [cd](https://en.wikipedia.org/wiki/Cd_(command))
-- [cp](https://en.wikipedia.org/wiki/Cp_(Unix))
-- [cut](https://en.wikipedia.org/wiki/Cut_(Unix))
-- [echo](https://en.wikipedia.org/wiki/Echo_(command))
-- [env](https://en.wikipedia.org/wiki/Env_(shell))
-- [ex](https://en.wikipedia.org/wiki/Ex_(editor))
-- [file](https://en.wikipedia.org/wiki/File_(command))
-- [find](https://en.wikipedia.org/wiki/Find)
-- [ls](https://en.wikipedia.org/wiki/Ls)
-- [man](https://en.wikipedia.org/wiki/Man_page)
-- [mkdir](https://en.wikipedia.org/wiki/Mkdir)
-- [mv](https://en.wikipedia.org/wiki/Mv)
-- [nm](https://en.wikipedia.org/wiki/Nm_(Unix))
-- [ps](https://en.wikipedia.org/wiki/Ps_(Unix))
-- [pwd](https://en.wikipedia.org/wiki/Pwd)
-- [rm](https://en.wikipedia.org/wiki/Rm_(Unix))
-- [sed](https://en.wikipedia.org/wiki/Sed)
-- [touch](https://en.wikipedia.org/wiki/Touch_(Unix))
-
-</p></details>
-
-<details><summary><strong>Package Managers</strong></summary><p>
-
-- [apt](http://help.ubuntu.ru/wiki/apt)
-- [dnf](https://en.wikipedia.org/wiki/DNF_(software))
-- [yum](https://fedoraproject.org/wiki/Yum/ru)
-- [brew](https://brew.sh)
-- [linuxbrew](http://linuxbrew.sh)
-- [npm](https://docs.npmjs.com)
-
-</p></details>
-
-<details><summary><strong>Software</strong></summary><p>
-
-- [curl](https://www.gitbook.com/book/bagder/everything-curl/details)
-- [wget](https://www.gnu.org/software/wget/manual/wget.pdf)
-- [openssl](https://www.openssl.org)
-- [nano](https://www.nano-editor.org)
-- [tree](https://linux.die.net/man/1/tree)
-- [vim](http://www.vim.org)
-
-</p></details>
-
-<details><summary><strong>Политика безопасности проекта</strong></summary><p>
-
-Введение
-
-Данная политика безопасности описывает, как обрабатываем вопросы безопасности в этом проекте, а также как пользователи и участники могут сообщать о потенциальных уязвимостях. Стремимся обеспечить прозрачность и ответственность в вопросах безопасности для защиты пользователей и проекта.
-
-## Как сообщить об уязвимости
-
-Если вы обнаружили уязвимость или проблему безопасности:
-
-1. Пожалуйста, не публикуйте её публично, чтобы предотвратить потенциальные злоупотребления.
-2. Сообщите напрямую по электронной почте: shmakovis@inbox.ru
-3. Предоставьте детальное описание уязвимости, включая:
-   - Шаги воспроизведения
-   - Версию проекта, где была обнаружена проблема
-   - Ваши контакты для связи
-
-Мы обязуемся ответить в течение 48 часов с подтверждением получения сообщения.
-
-## Процесс рассмотрения и исправления уязвимостей
-
-1. Получение и подтверждение уязвимости.
-2. Анализ и оценка риска.
-3. Разработка патча с последующим тестированием.
-4. Выпуск обновления безопасности.
-5. Уведомление общественности и пользователей после выпуска обновления.
-6. Ведение журнала уязвимостей и исправлений (если применимо).
-
-## Поддерживаемые версии проекта
-
-- Поддерживается текущая основная ветка `develop`
-- Рекомендуется обновляться до поддерживаемых версий для безопасности
-
-## Рекомендации пользователям
-
-- Всегда используйте последние стабильные версии проекта.
-- Подписывайтесь на обновления безопасности в репозитории или используйте автоматическое обновление.
-- Сообщайте о любых подозрительных действиях или проблемах безопасности.
-
-## Политика раскрытия информации
-
-- Мы стремимся к открытому диалогу и своевременному раскрытию информации.
-- Информация о критических уязвимостях будет публиковаться после успешного выпуска патча.
-- Мы приветствуем сотрудничество с исследователями безопасности и сообществом.
-
-## Дополнительная информация
-
-- Документирование и хранение журналов безопасности.
-- Использование автоматизированных инструментов для сканирования кода на уязвимости.
-- Регулярные аудиты безопасности и ревизии.
-
----
-
-Если у вас возникли вопросы или предложения по безопасности проекта, пожалуйста, свяжитесь по контактным данным выше.
-
----
-
-Спасибо за ваш вклад в безопасность нашего проекта!
-
-</p></details>
-
-<details><summary><strong>Contributor Covenant</strong></summary><p>
-
-Это широко используемый кодекс поведения для участников открытых проектов. Его цель — создать приветливую, инклюзивную и свободную от домогательств среду для всех участников сообщества, включая представителей меньшинств и уязвимых групп.
-
-Кодекс определяет ожидаемые модели поведения, такие как уважение, конструктивное общение и ответственность за свои действия. В нем также чётко описано, какие формы поведения считаются неприемлемыми: домогательства, дискриминация, оскорбления, преследования и разглашение личной информации без согласия.
-
-Кроме того, Contributor Covenant устанавливает обязанности лидеров и сопровождающих проекта по обеспечению соблюдения этих правил, а также процесс реагирования на жалобы, включая конфиденциальное рассмотрение и принятие мер по устранению нарушений.
-
-Этот кодекс применяется не только в рамках технических площадок проекта, но и когда кто-то представляет сообщество публично, помогая поддерживать здоровую и продуктивную атмосферу для совместной работы и развития проектов.
-
-Широко принят в крупных open source проектах и организациях, таких как Linux Foundation, Python Software Foundation и многих других, Contributor Covenant способствует формированию уважительной и разнообразной среды разработки программного обеспечения.
-
-</p></details>
-
-***
-
-### Ресурсы:
-
-* 📘  Аннотационный материал:
-    * <a href="https://github.com/geminishkv/course_labs/blob/develop/artifacts/ppt/">Лекции</a>
-    * <a href="https://github.com/geminishkv/course_labs/blob/develop/artifacts/owasp/">OWASP TOP 10</a>
-    * <a href="https://github.com/geminishkv/course_labs/blob/develop/artifacts/cheetsheet/">cheatsheet</a>
-    * <a href="https://github.com/geminishkv/course_labs/blob/develop/artifacts/exmpls/">Примеры</a>
 * 📦 **Releases**:
-* Links:
+
+* **Links:**
     * [Google Sheets](https://www.google.ru/intl/ru/sheets/about/)
     * [Google Docs](https://www.google.ru/intl/ru/docs/about/)
     * [GitHub SSH Key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/)
@@ -465,5 +199,4 @@ Copyright (c) 2025 Elijah S Shmakov
 
 
 ![Logo](assets/logotype/logo.jpg)
-
 
