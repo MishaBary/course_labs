@@ -1,22 +1,36 @@
+# Этап 1: сборка зависимостей
 FROM python:3.11-slim AS builder
 WORKDIR /hello
+
+# Копируем файл с зависимостями
 COPY requirements.txt .
+
+xx# Устанавливаем зависимости в отдельную директорию wheelhouse для кеширования
 RUN pip install --upgrade pip && pip wheel --wheel-dir=/wheels -r requirements.txt
 
-FROM python:3.11-slim 
+# Этап 2: запускаемый образ
+FROM python:3.11-slim
 WORKDIR /hello
-COPY --from=builder /wheels /wheels 
-COPY requirements.txt .
-RUN pip install --no-index --find-links=/wheels -r requirements.txt
-COPY hello.py .
 
+# Создаём непривилегированного пользователя
+RUN useradd -m appuser
+
+# Копируем файл с зависимостями
+COPY --from=builder /wheels /wheels
+COPY requirements.txt .
+
+# Устанавливаем зависимости из wheel-пакетов и удаляем из финальной версии
+RUN pip install --no-index --find-links=/wheels -r requirements.txt && rm -rf /wheels
+
+# Копируем исходный код приложения
+COPY new.py .
+
+# Переменные окружения для улучшенной работы Python
 ENV PYTHONUNBUFFERED=1
-CMD ["python", "hello.py"]
-# -:
-#  Контейнер запускается под пользователем root - надо добавить USER
-#  python:3.11-slim может изменяться - digest
-#  Каталог /wheels остаётся в финальном образе - много инфы о контейнере
-# +:
-#  Установка зависимостей из локальных wheel-пакетов
-#  Разделение этапов сборки и исполнения
-#  Минимальный базовый образ
+ENV SDL_VIDEODRIVER=dummy
+
+# Запускаем приложение
+USER appuser
+CMD ["python", "new.py"]
+
+#add USER, no-graphic mode and del /wheels in final image`s version
