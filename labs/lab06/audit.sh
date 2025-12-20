@@ -107,8 +107,8 @@ case "${PLATFORM}" in
     echo ""
 
     MOUNTS="-v /etc:/etc:ro \
-            -v /var/lib:/var/lib:ro \
-            -v /usr/bin:/usr/bin:ro"
+            -v /var/lib:/var/lib:ro"
+       #     -v /usr/bin:/usr/bin:ro"
 
     if [ -f "/usr/bin/containerd" ] && [ ! -d "/usr/bin/containerd" ]; then
       MOUNTS="${MOUNTS} -v /usr/bin/containerd:/usr/bin/containerd:ro"
