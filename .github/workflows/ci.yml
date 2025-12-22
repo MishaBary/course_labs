@@ -169,13 +169,21 @@ jobs:
       - linter_checks_ruff_shell
       - layout_linter_checks
       - dependency_audit_checks
+    permissions:
+      contents: read
+      pull-requests: read
+  
     steps:
       - uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 0   # важно для корректного сканирования PR
+  
       - name: Scan repository for secrets with gitleaks
         uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          config-path: .gitleaks.toml
+          args: detect --config=.gitleaks.toml
 
   security_docker_checks:
     runs-on: ubuntu-latest
