@@ -1,29 +1,58 @@
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, abort
 import sqlite3
-import os
 import subprocess
-import pickle
 import logging
+import html
+from pathlib import Path
+import ast
+import operator
 
 app = Flask(__name__)
 
-app.config["DEBUG"] = True
+# === Production-safe configuration ===
+app.config["DEBUG"] = False
+logging.basicConfig(level=logging.INFO)
 
-DB_USER = "admin"
-DB_PASSWORD = "SuperSecret123"
 DB_PATH = "app.db"
 
-logging.basicConfig(level=logging.DEBUG)
 
-
+# === Database ===
 def get_db():
-    conn = sqlite3.connect(DB_PATH)
-    return conn
+    return sqlite3.connect(DB_PATH)
 
 
+# === Utils ===
+OPS = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+}
+
+
+def safe_eval(node):
+    """Safely evaluate arithmetic expressions without eval()."""
+    if isinstance(node, ast.Expression):
+        return safe_eval(node.body)
+    if isinstance(node, ast.Constant):
+        if not isinstance(node.value, (int, float)):
+            raise ValueError("Invalid constant")
+        return node.value
+    if isinstance(node, ast.BinOp):
+        op_type = type(node.op)
+        if op_type not in OPS:
+            raise ValueError("Unsupported operator")
+        return OPS[op_type](
+            safe_eval(node.left),
+            safe_eval(node.right),
+        )
+    raise ValueError("Unsafe expression")
+
+
+# === Routes ===
 @app.route("/")
 def index():
-    return "Vulnerable lab07 app v1.0"
+    return "Application is running"
 
 
 @app.route("/user")
@@ -31,9 +60,13 @@ def get_user():
     username = request.args.get("name", "")
     conn = get_db()
     cur = conn.cursor()
-    query = f"SELECT id, name, email FROM users WHERE name = '{username}'"  # nosec B608
-    app.logger.debug("Executing query: %s", query)
-    rows = cur.execute(query).fetchall()
+
+    # SQL Injection protection (parameterized query)
+    cur.execute(
+        "SELECT id, name, email FROM users WHERE name = ?",
+        (username,),
+    )
+    rows = cur.fetchall()
     conn.close()
     return {"result": rows}
 
@@ -41,63 +74,69 @@ def get_user():
 @app.route("/search")
 def search():
     q = request.args.get("q", "")
-    html = f"<h1>Results for: {q}</h1>"
-    return make_response(html, 200)
+    safe_q = html.escape(q)
+    html_resp = f"<h1>Results for: {safe_q}</h1>"
+    return make_response(html_resp, 200)
 
 
 @app.route("/ping")
 def ping():
     host = request.args.get("host", "127.0.0.1")
-    cmd = f"ping -c 1 {host}"  # nosec B605
-    os.system(cmd)
+
+    # No shell execution
+    subprocess.run(
+        ["ping", "-c", "1", host],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
     return f"Pinged {host}"
 
 
 @app.route("/backup")
 def backup():
-    target = request.args.get("target", "/tmp/backup.sql")  # nosec B108
-    cmd = ["sh", "-c", f"pg_dump mydb > {target}"]
-    subprocess.call(cmd)
-    return f"Backup to {target} started"
+    target = request.args.get("target", "backup.sql")
+
+    # Restrict file write location
+    target_path = Path("/tmp") / Path(target).name
+
+    with open(target_path, "w") as f:
+        subprocess.run(
+            ["pg_dump", "mydb"],
+            stdout=f,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+
+    return f"Backup written to {target_path}"
 
 
 @app.route("/read")
 def read_file():
-    path = request.args.get("path", "/etc/passwd")
-    try:
-        with open(path, "r") as f:
-            data = f.read()
-        return f"<pre>{data}</pre>"
-    except Exception as e:
-        return str(e), 500
+    base_dir = Path("/tmp").resolve()
+    requested = Path(request.args.get("path", "")).resolve()
 
+    # Path Traversal protection
+    if not str(requested).startswith(str(base_dir)):
+        abort(403)
 
-@app.route("/load")
-def load():
-    data = request.args.get("data", "")
-    try:
-        obj = pickle.loads(bytes.fromhex(data))  # nosec B301
-        return f"Loaded object: {obj}"
-    except Exception as e:
-        return f"Error: {e}", 500
+    if not requested.exists():
+        abort(404)
+
+    return requested.read_text()
 
 
 @app.route("/calc")
 def calc():
     expr = request.args.get("expr", "1+1")
-    result = eval(expr)  # nosec B307
-    return str(result)
+    try:
+        node = ast.parse(expr, mode="eval")
+        result = safe_eval(node)
+        return str(result)
+    except Exception:
+        abort(400)
 
 
-@app.route("/debug")
-def debug():
-    headers = dict(request.headers)
-    env = dict(os.environ)
-    return {
-        "headers": headers,
-        "env_sample": {k: env[k] for k in list(env)[:10]},
-    }
-
-
+# === Entry point ===
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)  # nosec B104
+    app.run(host="0.0.0.0", port=8080)
