@@ -3,15 +3,30 @@ from flask import (
     request,
     make_response,
     render_template_string,
-    redirect,
-    url_for,
+    session,
+    abort,
+    send_from_directory,
 )
+from markupsafe import escape
+from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import os
+from pathlib import Path
 
 app = Flask(__name__)
 
 DB_PATH = os.environ.get("APP_DB_PATH", "app.db")
+
+# Важно: для лабы можно оставить дефолт, но лучше задать через env APP_SECRET_KEY
+app.secret_key = os.environ.get("APP_SECRET_KEY", "lab08-dev-secret-key")
+
+# Cookie hardening (ZAP: HttpOnly/SameSite)
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    # Secure=True только при HTTPS. У тебя HTTP, поэтому False.
+    SESSION_COOKIE_SECURE=False,
+)
 
 
 def init_db():
@@ -22,88 +37,147 @@ def init_db():
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT,
-            password TEXT,
+            password_hash TEXT,
             role TEXT
         )
         """
     )
     cur.execute("DELETE FROM users")
+
+    # Храним хэши паролей вместо plaintext
     cur.execute(
-        "INSERT INTO users (username, password, role) VALUES ('admin', 'admin123', 'admin')"
+        "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
+        ("admin", generate_password_hash("admin123"), "admin"),
     )
     cur.execute(
-        "INSERT INTO users (username, password, role) VALUES ('user', 'user123', 'user')"
+        "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
+        ("user", generate_password_hash("user123"), "user"),
     )
     conn.commit()
     conn.close()
 
 
+def require_admin():
+    if session.get("role") != "admin":
+        abort(403)
+
+
+def no_store(resp):
+    # ZAP informational про кеширование: на чувствительных страницах лучше no-store
+    resp.headers["Cache-Control"] = "no-store"
+    resp.headers["Pragma"] = "no-cache"
+    return resp
+
+
+@app.after_request
+def add_security_headers(resp):
+    # ZAP: CSP missing
+    resp.headers.setdefault(
+        "Content-Security-Policy",
+        "default-src 'self'; "
+        "base-uri 'self'; "
+        "object-src 'none'; "
+        "frame-ancestors 'none'; "
+        "script-src 'self'; "
+        "style-src 'self'; "
+        "img-src 'self' data:; "
+        "form-action 'self'",
+    )
+
+    # ZAP: clickjacking header missing
+    resp.headers.setdefault("X-Frame-Options", "DENY")
+
+    # ZAP: X-Content-Type-Options missing
+    resp.headers.setdefault("X-Content-Type-Options", "nosniff")
+
+    # ZAP: Permissions-Policy missing
+    resp.headers.setdefault(
+        "Permissions-Policy",
+        "geolocation=(), microphone=(), camera=(), payment=(), usb=()",
+    )
+
+    # ZAP: Spectre/site isolation hardening
+    resp.headers.setdefault("Cross-Origin-Opener-Policy", "same-origin")
+    resp.headers.setdefault("Cross-Origin-Embedder-Policy", "require-corp")
+    resp.headers.setdefault("Cross-Origin-Resource-Policy", "same-origin")
+
+    # Уменьшаем утечки через Referrer (не требовал ZAP, но норм для hardening)
+    resp.headers.setdefault("Referrer-Policy", "no-referrer")
+    return resp
+
+
 @app.route("/")
 def index():
+    username = session.get("user")
+    role = session.get("role")
+
     html = """
-    <h1>Vulnerable DAST Demo App</h1>
-    <p>Пример уязвимого приложения для лабораторной по DAST.</p>
+    <h1>DAST Demo App (Fixed)</h1>
+    <p>Это версия после исправлений по отчёту ZAP.</p>
+
+    {% if username %}
+      <p>Вы вошли как: <b>{{ username }}</b> (роль: <b>{{ role }}</b>)</p>
+      <p><a href="/logout">Logout</a></p>
+    {% else %}
+      <p>Вы не авторизованы. <a href="/login">Login</a></p>
+    {% endif %}
+
     <ul>
-      <li><a href="/echo?msg=Hello">Reflected XSS / echo</a></li>
-      <li><a href="/search?username=admin">SQL Injection / search</a></li>
-      <li><a href="/login">Небезопасный логин</a></li>
-      <li><a href="/profile">Профиль (зависит от cookie)</a></li>
-      <li><a href="/admin">«Админка» без нормальной авторизации</a></li>
-      <li><a href="/files/">Directory listing</a></li>
+      <li><a href="/echo?msg=Hello">Echo (XSS fixed)</a></li>
+      <li><a href="/search?username=admin">Search (SQLi fixed)</a></li>
+      <li><a href="/profile">Profile (server-side session)</a></li>
+      <li><a href="/admin">Admin (protected)</a></li>
+      <li><a href="/files/secret.txt">Files (admin-only)</a></li>
     </ul>
     """
-    resp = make_response(html)
-    resp.set_cookie("session", "guest-session-id")
-    return resp
+    return make_response(render_template_string(html, username=username, role=role))
 
 
 @app.route("/echo")
 def echo():
+    # XSS fixed: экранируем пользовательский ввод
     msg = request.args.get("msg", "")
+    safe_msg = escape(msg)
+
     template = """
-    <h2>Echo</h2>
-    <p>Сообщение: {msg}</p>
-    <p>Попробуйте передать что-нибудь вроде: <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code></p>
+    <h2>Echo (safe)</h2>
+    <p>Сообщение: {{ msg }}</p>
+    <p>Тут экранирование включено — JS не выполняется.</p>
     <a href="/">Назад</a>
-    """.format(msg=msg)
-    return render_template_string(template)
+    """
+    return make_response(render_template_string(template, msg=safe_msg))
 
 
 @app.route("/search")
 def search():
+    # SQLi fixed: параметризованный запрос, не показываем SQL в ответе (ZAP SQL disclosure)
     username = request.args.get("username", "")
+
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
-    query = f"SELECT id, username, role FROM users WHERE username = '{username}'"  # nosec B608
-    rows = []
-    error = None
-    try:
-        for row in cur.execute(query):
-            rows.append(row)
-    except Exception as e:
-        error = str(e)
-
+    rows = cur.execute(
+        "SELECT id, username, role FROM users WHERE username = ?",
+        (username,),
+    ).fetchall()
     conn.close()
 
     template = """
-    <h2>Поиск пользователя</h2>
-    <p>Запрос: <code>{{ query }}</code></p>
-    {% if error %}
-      <p style="color:red;">SQL error: {{ error }}</p>
-    {% endif %}
+    <h2>Поиск пользователя (safe)</h2>
+    <p><b>Параметр:</b> <code>{{ username }}</code></p>
+
     {% if rows %}
       <ul>
       {% for id, username, role in rows %}
-        <li>{{ id }} – {{ username }} ({{ role }})</li>
+        <li>{{ id }} — {{ username }} ({{ role }})</li>
       {% endfor %}
       </ul>
     {% else %}
       <p>Ничего не найдено</p>
     {% endif %}
-    <p>Попробуйте, например: <code>?username=admin' OR '1'='1</code></p>
+
     <a href="/">Назад</a>
     """
-    return render_template_string(template, query=query, rows=rows, error=error)
+    return make_response(render_template_string(template, username=escape(username), rows=rows))
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -116,102 +190,94 @@ def login():
           <label>Password: <input type="password" name="password"></label><br>
           <button type="submit">Login</button>
         </form>
-        <p>Попробуйте: admin / admin123 или user / user123</p>
+        <p>admin / admin123 или user / user123</p>
         <a href="/">Назад</a>
         """
-        return render_template_string(form)
+        return no_store(make_response(render_template_string(form)))
 
     username = request.form.get("username", "")
     password = request.form.get("password", "")
 
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
-
-    query = f"SELECT id, username, role FROM users WHERE username = '{username}' AND password = '{password}'"  # nosec B608
-    row = cur.execute(query).fetchone()
+    row = cur.execute(
+        "SELECT username, password_hash, role FROM users WHERE username = ?",
+        (username,),
+    ).fetchone()
     conn.close()
 
     if row:
-        _, uname, role = row
-        resp = make_response(
-            f"<h2>Добро пожаловать, {uname} ({role})!</h2><a href='/'>На главную</a>"
-        )
+        uname, pwd_hash, role = row
+        if check_password_hash(pwd_hash, password):
+            session["user"] = uname
+            session["role"] = role
+            resp = make_response(f"<h2>Добро пожаловать, {escape(uname)} ({escape(role)})!</h2><a href='/'>На главную</a>")
+            return no_store(resp)
 
-        resp.set_cookie("user", uname)
-        resp.set_cookie("role", role)
-        return resp
-    else:
-        return render_template_string(
-            "<h2>Неверные учетные данные</h2><a href='/login'>Попробовать снова</a>"
-        )
+    return no_store(make_response("<h2>Неверные учетные данные</h2><a href='/login'>Попробовать снова</a>"))
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return no_store(make_response("<h2>Вы вышли</h2><a href='/'>На главную</a>"))
 
 
 @app.route("/profile")
 def profile():
-    username = request.cookies.get("user", "guest")
-    role = request.cookies.get("role", "guest")
+    username = session.get("user")
+    role = session.get("role")
+
+    if not username:
+        return no_store(make_response("<h2>Вы не авторизованы</h2><a href='/login'>Login</a>", 401))
 
     template = """
-    <h2>Профиль пользователя</h2>
+    <h2>Профиль</h2>
     <p>Имя: {{ username }}</p>
     <p>Роль: {{ role }}</p>
-    <p>Cookie легко подделать: можно выдать себе роль 'admin'.</p>
+    <p>Роль берётся из серверной сессии (подделка cookie больше не работает).</p>
     <a href="/">Назад</a>
     """
-    return render_template_string(template, username=username, role=role)
+    return no_store(make_response(render_template_string(template, username=escape(username), role=escape(role))))
 
 
 @app.route("/admin")
 def admin():
-    role = request.cookies.get("role", "guest")
-    if role != "admin":
-        return (
-            "<h2>Доступ запрещён: вы не admin</h2><p>Попробуйте изменить cookie 'role'.</p><a href='/'>Назад</a>",
-            403,
-        )
+    if session.get("role") != "admin":
+        return no_store(make_response("<h2>Доступ запрещён</h2><a href='/'>Назад</a>", 403))
 
     template = """
     <h2>Admin panel</h2>
-    <p>Секретные настройки приложения (демо).</p>
-    <ul>
-      <li>DEBUG: true</li>
-      <li>FEATURE_FLAG: experimental_mode</li>
-    </ul>
+    <p>Доступ только для admin через серверную сессию.</p>
     <a href="/">Назад</a>
     """
-    return render_template_string(template)
+    return no_store(make_response(render_template_string(template)))
 
 
 @app.route("/files/")
-@app.route("/files/<path:subpath>")
-def files(subpath=""):
-    base_dir = os.path.abspath(os.path.dirname(__file__))
-    target_dir = os.path.join(base_dir, "files")
+def files_index():
+    # Directory listing fixed: не отдаём список файлов
+    return "<h2>Not Found</h2>", 404
 
-    full_path = os.path.join(target_dir, subpath)
 
-    if not os.path.exists(full_path):
-        return "<h2>Путь не найден</h2><a href='/'>Назад</a>", 404
+@app.route("/files/<path:filename>")
+def files(filename):
+    # Ограничиваем доступ к файлам: только admin
+    require_admin()
 
-    if os.path.isdir(full_path):
-        entries = os.listdir(full_path)
-        items = "".join(
-            f"<li><a href='/files/{subpath}{'' if subpath.endswith('/') or subpath == '' else '/'}{e}'>{e}</a></li>"
-            for e in entries
-        )
-        html = f"""
-        <h2>Files under /files/{subpath}</h2>
-        <ul>{items}</ul>
-        <p>Пример directory listing без ограничений.</p>
-        <a href="/">Назад</a>
-        """
-        return html
+    base_dir = Path(__file__).resolve().parent
+    target_dir = base_dir / "files"
 
-    with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
-        content = f.read()
-    return f"<pre>{content}</pre>"
+    # Запрещаем выдавать директории
+    if filename.endswith("/") or filename == "":
+        abort(404)
+
+    # Flask сам защищает от path traversal через send_from_directory
+    return no_store(send_from_directory(target_dir, filename))
 
 
 if __name__ == "__main__":
     init_db()
-    app.run(host="0.0.0.0", port=8080, debug=True)  # nosec B201,B104
+    # debug=False уменьшает утечки и “Server” в dev может стать менее подробным
+    app.run(host="0.0.0.0", port=8080, debug=False)
+

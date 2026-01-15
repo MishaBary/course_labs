@@ -18,7 +18,7 @@ echo "[*] Running OWASP ZAP baseline scan against ${TARGET_URL}"
 echo "[i] Using image: ${ZAP_IMAGE}"
 echo "[i] Reports will be saved to ${REPORT_DIR}"
 
-docker run --rm \
+docker run --rm --network=host \
   -v "${REPORT_DIR}:/zap/wrk" \
   "${ZAP_IMAGE}" \
   zap-baseline.py \
